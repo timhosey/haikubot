@@ -1,24 +1,21 @@
 require 'syllabize'
-require 'rmagick'
-include Magick
+require 'rubygems'
+require 'mini_magick'
 
-def addt
-  img = ImageList.new('Your image path eg.public/computer-cat.jpg')
-  txt = Draw.new
-  img.annotate(txt, 0,0,0,0, "The text you want to add in the image") {
-    txt.gravity = Magick::SouthGravity
-    txt.pointsize = 25
-    txt.stroke = '#000000'
-    txt.fill = '#ffffff'
-    txt.font_weight = Magick::BoldWeight
-  }
+def make_image(text)
+  img = MiniMagick::Image.open('img/base.jpg')
 
-  img.format = 'jpeg'
-  send_data img.to_blob,
-            :stream => 'false',
-            :filename => 'test.jpg',
-            :type => 'image/jpeg',
-            :disposition => 'inline'
+  img.combine_options do |c|
+    c.gravity 'East'
+    c.draw "text 100,10 '#{text}'"
+    c.font './JapaneseTourist.ttf'
+    c.pointsize 100
+    # c.stroke 'white'
+    # c.strokewidth 1
+    c.fill('#000000')
+  end
+
+  img.write('img/new.jpg')
 end
 
 @words = []
@@ -58,6 +55,7 @@ if total_syl == 17
   # Third line. 5 syllables.
   lines[2] = get_line(5)
   puts lines
+  make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}")
 else
   abort_text = total_syl > 17 ? 'too many' : 'too few'
   abort "Phrase has #{abort_text} syllables (#{total_syl})!"
