@@ -8,7 +8,7 @@ def make_image(text)
   img.combine_options do |c|
     c.gravity 'East'
     c.draw "text 100,10 '#{text}'"
-    c.font './JapaneseTourist.ttf'
+    c.font './JapaneseBrush.ttf'
     c.pointsize 100
     # c.stroke 'white'
     # c.strokewidth 1
