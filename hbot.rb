@@ -6,13 +6,13 @@ def make_image(text)
   img = MiniMagick::Image.open('img/base.jpg')
 
   img.combine_options do |c|
-    c.gravity 'East'
-    c.draw "text 100,10 '#{text}'"
-    c.font './JapaneseBrush.ttf'
-    c.pointsize 100
-    # c.stroke 'white'
-    # c.strokewidth 1
-    c.fill('#000000')
+    c.gravity 'Southeast'
+    c.draw "text 50,10 '#{text}'"
+    c.font './Ounen-mouhitsu.otf'
+    c.pointsize 72
+    c.stroke '#000000'
+    c.strokewidth 1
+    c.fill('#b9b9b9')
   end
 
   img.write('img/new.jpg')
