@@ -1,6 +1,7 @@
 require 'syllabize'
 require 'rubygems'
 require 'mini_magick'
+require 'twitter'
 
 def make_image(text)
   img = MiniMagick::Image.open('img/base.jpg')
@@ -35,6 +36,17 @@ def get_line(line_length)
   end
   abort "Unable to make clean #{line_length}-syllable sentence (#{line})" if line.count_syllables > line_length
   line
+end
+
+client = Twitter::REST::Client.new do |config|
+  config.consumer_key        = 'yRdSUEMRlQrbwQ9i37V8fT3K8'
+  config.consumer_secret     = 'bhh1T79obF1RQYHTuWhdUBW1sXqFEjIpffNxvM6FCawlTvaFkV'
+  config.access_token        = '2798026922-HLjTtuQoCEwsCsknhFijWKzw6ZckV2tjEjoxYpI'
+  config.access_token_secret = 'zxzTDj8od3SpOFXqt4dNo725u2H34OWjH7al5fSWoeHZl'
+end
+
+client.sample do |object|
+  puts object.text if object.is_a?(Twitter::Tweet)
 end
 
 puts 'Enter sentence:'
