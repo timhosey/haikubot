@@ -2,6 +2,9 @@ require 'syllabize'
 require 'rubygems'
 require 'mini_magick'
 require 'twitter'
+require "swearjar"
+
+sj = Swearjar.default
 
 def escape_characters_in_string(string)
   pattern = /(\'|\"|\.|\*|\/|\-|\\)/
@@ -126,8 +129,15 @@ def check_tweets(tweets_num)
     config.access_token_secret = creds[3].chomp
   end
 
+  generated_haiku = false
+
   search_terms = '(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt'
   client.search(search_terms, result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
+    
+    # Skip if we generated a haiku this search.
+    next if generated_haiku
+    next if sj.scorecard(tweet.text)['discriminatory'] > 0
+
     @words = []
 
     t_text = tweet.text.tr('#@$','').dup
@@ -161,13 +171,14 @@ def check_tweets(tweets_num)
       puts "Generated Haiku from Tweet ##{tweet.id}!"
       puts lines
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
+      generated_haiku = true
     else
       abort_text = total_syl > 17 ? 'too many' : 'too few'
       puts "Phrase has #{abort_text} syllables (#{total_syl})!"
     end
   end
-
-  tweet_timeout(60)
+  timeout_length = generated_haiku ? 300 : 120
+  tweet_timeout(timeout_length)
 end
 
 def tweet_timeout(wait_time)
@@ -176,7 +187,7 @@ def tweet_timeout(wait_time)
     sleep 1
   end
 
-  check_tweets(100)
+  check_tweets(500)
 end
 
-check_tweets(100)
+check_tweets(500)
