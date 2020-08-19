@@ -3,17 +3,22 @@ require 'rubygems'
 require 'mini_magick'
 require 'twitter'
 
+def escape_characters_in_string(string)
+  pattern = /(\'|\"|\.|\*|\/|\-|\\)/
+  string.gsub(pattern){|match|"\\"  + match} # <-- Trying to take the currently found match and add a \ before it I have no idea how to do that).
+end
+
 def make_image(text, id)
   img = MiniMagick::Image.open('img/base.jpg')
 
   img.combine_options do |c|
-    c.gravity 'Southeast'
-    c.draw "text 50,10 '#{text}'"
-    c.font './Ounen-mouhitsu.otf'
-    c.pointsize 72
+    c.gravity 'Northeast'
+    c.draw "text 50,30 '#{text}'"
+    c.font './Mansalva-Regular.ttf'
+    c.pointsize 82
     c.stroke '#000000'
-    c.strokewidth 1
-    c.fill('#b9b9b9')
+    c.strokewidth 2
+    c.fill('#cccccc')
   end
 
   img.write("img/#{id}.jpg")
@@ -52,15 +57,17 @@ def check_tweets(tweets_num)
     @words = []
     # puts "#{tweet.user.screen_name}: #{tweet.text}"
     t_text = tweet.text.dup
-    t_name = tweet.user.name.dup
+    t_name = tweet.user.screen_name.dup
     # puts "Tweet ##{tweet.id}"
-    t_text.gsub!(/\B[@#]\S+\b/, '')
+    # this removes @ and # entries
+    # t_text.gsub!(/\B[@#]\S+\b/, '')
     t_text.gsub!(/#{URI::regexp}/, '')
+    next if File.exist?("img/#{tweet.id}.jpg")
 
     total_syl = t_text.count_syllables
     if total_syl == 17
-      puts "Phrase has exactly #{total_syl} syllables."
-      @words = t_text.split(' ')
+      puts "Tweet #{tweet.user.id} has exactly #{total_syl} syllables."
+      @words = escape_characters_in_string(t_text).split(' ')
       lines = ['', '', '']
 
       # First line. 5 syllables.
