@@ -50,7 +50,6 @@ def check_tweets(tweets_num)
   # Get keys and secrets from local file (not in repo anymore...)
   # In file ./creds add each on a newline matching below
   creds = File.readlines('./creds')
-  puts creds
   client = Twitter::REST::Client.new do |config|
     config.consumer_key        = creds[0].chomp
     config.consumer_secret     = creds[1].chomp
@@ -61,7 +60,7 @@ def check_tweets(tweets_num)
   client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
     @words = []
     # puts "#{tweet.user.screen_name}: #{tweet.text}"
-    t_text = tweet.text.dup
+    t_text = tweet.text.tr('#@$','').dup
     t_name = tweet.user.screen_name.dup
     # puts "Tweet ##{tweet.id}"
     # this removes @ and # entries
@@ -75,7 +74,7 @@ def check_tweets(tweets_num)
     total_syl = t_text.count_syllables
     if total_syl == 17
       puts "Tweet #{tweet.user.id} has exactly #{total_syl} syllables."
-      @words = escape_characters_in_string(t_text).tr('#@$','').split(' ')
+      @words = escape_characters_in_string(t_text).split(' ')
       lines = ['', '', '']
 
       # First line. 5 syllables.
