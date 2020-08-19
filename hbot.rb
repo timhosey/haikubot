@@ -21,61 +21,73 @@ def make_image(text, id)
       'gravity': 'Northeast',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '2': {
       'gravity': 'East',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '3': {
       'gravity': 'South',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '4': {
       'gravity': 'East',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '5': {
       'gravity': 'Southeast',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '6': {
       'gravity': 'Center',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '7': {
       'gravity': 'West',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '8': {
       'gravity': 'East',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '9': {
       'gravity': 'East',
       'pointsize': 82,
-      'fill': '#cccccc',
+      'fill': '#000000',
+      'stroke': '#cccccc',
     },
     '10': {
       'gravity': 'East',
       'pointsize': 82,
-      'fill': '#cccccc',
+      'fill': '#000000',
+      'stroke': '#cccccc',
     },
     '11': {
-      'gravity': 'East',
+      'gravity': 'North',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
     '12': {
       'gravity': 'Center',
       'pointsize': 82,
       'fill': '#cccccc',
+      'stroke': '#000000',
     },
   }
 
@@ -99,10 +111,11 @@ def get_line(line_length)
   line_syl = 0
   while line_syl < line_length
     line_syl += @words[0].downcase.gsub(/[^a-z0-9\s]/i, '').chomp.count_syllables
+    fixed_word = @words[0].gsub(/\\\./, '.')
     line += if line == ''
-              @words[0]
+              fixed_word
             else
-              " #{@words[0]}"
+              " #{fixed_word}"
             end
     # Removes the word from the list entirely
     @words.reject!.with_index { |_v, i| i == 0 }
