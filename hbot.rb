@@ -9,11 +9,12 @@ def escape_characters_in_string(string)
 end
 
 def make_image(text, id)
-  # Picks a base image.
+  # Picks a base image. Base images are in img/* and labeled as base_*
   base_img_list = Dir['./img/base_*.jpg']
   base_img = base_img_list.sample
   base_img_number = File.basename(base_img, '.*' ).gsub('base_', '')
 
+  # Changing settings based on image so they look nice.
   base_img_settings = {
     '1': {
       'gravity': 'Northeast',
@@ -76,6 +77,7 @@ def make_image(text, id)
       'fill': '#cccccc',
     },
   }
+
   img = MiniMagick::Image.open(base_img)
 
   img.combine_options do |c|
@@ -124,12 +126,13 @@ def check_tweets(tweets_num)
     config.access_token_secret = creds[3].chomp
   end
 
-  client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
+  search_terms = '(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt'
+  client.search(search_terms, result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
     @words = []
-    # puts "#{tweet.user.screen_name}: #{tweet.text}"
+
     t_text = tweet.text.tr('#@$','').dup
     t_name = tweet.user.screen_name.dup
-    # puts "Tweet ##{tweet.id}"
+
     # this removes @ and # entries
     # t_text.gsub!(/\B[@#]\S+\b/, '')
     t_text.gsub!(/#{URI::regexp}/, '')
