@@ -72,15 +72,15 @@ def check_tweets(tweets_num)
 
       # First line. 5 syllables.
       lines[0] = get_line(5)
-      next if !lines[0]
+      next unless lines[0]
 
       # Second line. 7 syllables.
       lines[1] = get_line(7)
-      next if !lines[1]
+      next unless lines[1]
 
       # Third line. 5 syllables.
       lines[2] = get_line(5)
-      next if !lines[2]
+      next if unless lines[2]
       puts "Generated Haiku from Tweet ##{tweet.id}!"
       puts lines
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
