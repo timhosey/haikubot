@@ -84,7 +84,15 @@ def check_tweets(tweets_num)
 
     @words = []
 
-    t_text = tweet.text.tr('#@$','').dup
+    # Setting encoding options to remove tweets with garbage characters
+    encoding_options = {
+      :invalid           => :replace,  # Replace invalid byte sequences
+      :undef             => :replace,  # Replace anything not defined in ASCII
+      :replace           => '',        # Use a blank for those replacements
+      :universal_newline => true       # Always break lines with \n
+    }
+
+    t_text = tweet.text.tr('#@$','').encode(Encoding.find('ASCII'), encoding_options).dup
     t_name = tweet.user.screen_name.dup
 
     # this removes @ and # entries
