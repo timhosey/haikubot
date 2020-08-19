@@ -1,8 +1,9 @@
 require 'syllabize'
 require 'rubygems'
 require 'mini_magick'
+require 'twitter'
 
-def make_image(text)
+def make_image(text, id)
   img = MiniMagick::Image.open('img/base.jpg')
 
   img.combine_options do |c|
@@ -15,10 +16,8 @@ def make_image(text)
     c.fill('#b9b9b9')
   end
 
-  img.write('img/new.jpg')
+  img.write("img/#{id}.jpg")
 end
-
-@words = []
 
 def get_line(line_length)
   line = ''
@@ -33,30 +32,67 @@ def get_line(line_length)
     # Removes the word from the list entirely
     @words.reject!.with_index { |_v, i| i == 0 }
   end
-  abort "Unable to make clean #{line_length}-syllable sentence (#{line})" if line.count_syllables > line_length
+  if line.count_syllables > line_length
+    puts "Unable to make clean #{line_length}-syllable sentence (#{line})"
+    return false
+  end
   line
 end
 
-puts 'Enter sentence:'
-phrase = gets
-fixed_phrase = phrase.downcase.gsub(/[^a-z0-9\s]/i, '').chomp
-total_syl = fixed_phrase.count_syllables
-if total_syl == 17
-  puts "Phrase has exactly #{total_syl} syllables."
-  @words = phrase.split(' ')
-  lines = ['', '', '']
+def check_tweets(tweets_num)
+  puts "Checking #{tweets_num} latest tweets..."
+  client = Twitter::REST::Client.new do |config|
+    config.consumer_key        = 'yRdSUEMRlQrbwQ9i37V8fT3K8'
+    config.consumer_secret     = 'bhh1T79obF1RQYHTuWhdUBW1sXqFEjIpffNxvM6FCawlTvaFkV'
+    config.access_token        = '2798026922-HLjTtuQoCEwsCsknhFijWKzw6ZckV2tjEjoxYpI'
+    config.access_token_secret = 'zxzTDj8od3SpOFXqt4dNo725u2H34OWjH7al5fSWoeHZl'
+  end
 
-  # First line. 5 syllables.
-  lines[0] = get_line(5)
+  client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
+    @words = []
+    # puts "#{tweet.user.screen_name}: #{tweet.text}"
+    t_text = tweet.text.dup
+    t_name = tweet.user.name.dup
+    # puts "Tweet ##{tweet.id}"
+    t_text.gsub!(/\B[@#]\S+\b/, '')
+    t_text.gsub!(/#{URI::regexp}/, '')
 
-  # Second line. 7 syllables.
-  lines[1] = get_line(7)
+    total_syl = t_text.count_syllables
+    if total_syl == 17
+      puts "Phrase has exactly #{total_syl} syllables."
+      @words = t_text.split(' ')
+      lines = ['', '', '']
 
-  # Third line. 5 syllables.
-  lines[2] = get_line(5)
-  puts lines
-  make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}")
-else
-  abort_text = total_syl > 17 ? 'too many' : 'too few'
-  abort "Phrase has #{abort_text} syllables (#{total_syl})!"
+      # First line. 5 syllables.
+      lines[0] = get_line(5)
+      next if !lines[0]
+
+      # Second line. 7 syllables.
+      lines[1] = get_line(7)
+      next if !lines[1]
+
+      # Third line. 5 syllables.
+      lines[2] = get_line(5)
+      next if !lines[2]
+      puts "Generated Haiku from Tweet ##{tweet.id}!"
+      puts lines
+      make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
+    else
+      abort_text = total_syl > 17 ? 'too many' : 'too few'
+      puts "Phrase has #{abort_text} syllables (#{total_syl})!"
+    end
+  end
+
+  tweet_timeout(60)
 end
+
+def tweet_timeout(wait_time)
+  puts "Waiting #{wait_time} seconds before next poll..."
+  wait_time.downto(0) do |i|
+    sleep 1
+  end
+
+  check_tweets(100)
+end
+
+check_tweets(100)
