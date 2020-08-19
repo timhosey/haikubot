@@ -120,8 +120,13 @@ def check_tweets(tweets_num)
       # Third line. 5 syllables.
       lines[2] = get_line(5)
       next unless lines[2]
-      puts "Generated Haiku from Tweet ##{tweet.id}!"
+
+      bylines_arr = File.readlines('./by_lines')
+      byline = bylines_arr.sample.chomp.gsub('%NAME%', t_name)
+      puts "Generated Haiku from Tweet ##{tweet.id}!\n"
+      puts byline
       puts lines
+      puts "- #{t_name}"
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
       generated_haiku = true
     else

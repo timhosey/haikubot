@@ -41,7 +41,7 @@
   :fill: '#cccccc'
   :stroke: '#000000'
 :'9':
-  :gravity: 'East'
+  :gravity: 'Southeast'
   :pointsize: 82
   :fill: '#000000'
   :stroke: '#cccccc'
