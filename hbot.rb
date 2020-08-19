@@ -50,11 +50,12 @@ def check_tweets(tweets_num)
   # Get keys and secrets from local file (not in repo anymore...)
   # In file ./creds add each on a newline matching below
   creds = File.readlines('./creds')
+  puts creds
   client = Twitter::REST::Client.new do |config|
-    config.consumer_key        = creds[0]
-    config.consumer_secret     = creds[1]
-    config.access_token        = creds[2]
-    config.access_token_secret = creds[3]
+    config.consumer_key        = creds[0].chomp
+    config.consumer_secret     = creds[1].chomp
+    config.access_token        = creds[2].chomp
+    config.access_token_secret = creds[3].chomp
   end
 
   client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
@@ -87,7 +88,7 @@ def check_tweets(tweets_num)
 
       # Third line. 5 syllables.
       lines[2] = get_line(5)
-      next if unless lines[2]
+      next unless lines[2]
       puts "Generated Haiku from Tweet ##{tweet.id}!"
       puts lines
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
