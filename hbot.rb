@@ -4,7 +4,7 @@ require 'mini_magick'
 require 'twitter'
 require "swearjar"
 
-sj = Swearjar.default
+@sj = Swearjar.default
 
 def escape_characters_in_string(string)
   pattern = /(\'|\"|\.|\*|\/|\-|\\)/
@@ -136,7 +136,7 @@ def check_tweets(tweets_num)
     
     # Skip if we generated a haiku this search.
     next if generated_haiku
-    next if sj.scorecard(tweet.text)['discriminatory'] > 0
+    next if @sj.scorecard(tweet.text)['discriminatory'] > 0
 
     @words = []
 
