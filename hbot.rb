@@ -81,13 +81,13 @@ def make_image(text, id)
   img = MiniMagick::Image.open(base_img)
 
   img.combine_options do |c|
-    c.gravity base_img_settings[base_img_number.to_s]['gravity']
-    c.pointsize base_img_settings[base_img_number.to_s]['pointsize']
+    c.gravity base_img_settings[:"#{base_img_number}"][:gravity]
+    c.pointsize base_img_settings[:"#{base_img_number}"][:pointsize]
     c.stroke '#000000'
     c.draw "text 50,30 '#{text}'"
     c.font './Mansalva-Regular.ttf'
     c.strokewidth 2
-    c.fill(base_img_settings[base_img_number.to_s]['fill'])
+    c.fill(base_img_settings[:"#{base_img_number}"][:fill])
   end
 
   img.write("img/#{id}.jpg")
