@@ -5,6 +5,13 @@ require 'twitter'
 require 'swearjar'
 require 'yaml'
 
+# Settings.
+# TODO: Build a YML with settings
+@settings = {
+  'img_path': './img/generated',
+  'base_img_path': './img'
+}
+
 def escape_characters_in_string(string)
   pattern = /(\'|\"|\.|\*|\/|\-|\\)/
   string.gsub(pattern){|match|"\\"  + match} # <-- Trying to take the currently found match and add a \ before it I have no idea how to do that).
@@ -12,7 +19,7 @@ end
 
 def make_image(text, id)
   # Picks a base image. Base images are in img/* and labeled as base_*
-  base_img_list = Dir['./img/base_*.jpg']
+  base_img_list = Dir["#{@settings[:base_img_path]}/base_*.jpg"]
   base_img = base_img_list.sample
   base_img_number = File.basename(base_img, '.*' ).gsub('base_', '')
 
@@ -31,7 +38,7 @@ def make_image(text, id)
     c.fill(base_img_settings[:"#{base_img_number.to_s}"][:fill])
   end
 
-  img.write("img/#{id}.jpg")
+  img.write("#{@settings[:img_path]}/#{id}.jpg")
 end
 
 def get_line(line_length)
@@ -98,7 +105,7 @@ def check_tweets(tweets_num)
     # this removes @ and # entries
     # t_text.gsub!(/\B[@#]\S+\b/, '')
     t_text.gsub!(/#{URI::regexp}/, '')
-    if File.exist?("img/#{tweet.id}.jpg")
+    if File.exist?("#{@settings[:img_path]}/#{tweet.id}.jpg")
       puts "File exists for #{tweet.id}. Skipping."
       next
     end
@@ -128,13 +135,15 @@ def check_tweets(tweets_num)
       puts lines
       puts "- #{t_name}"
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
+      posted_tweet = client.update_with_media(byline, File.new("#{@settings[:img_path]}/#{tweet.id}.jpg"))
+      puts "Tweet #{posted_tweet.id} posted: #{posted_tweet.url.to_s}"
       generated_haiku = true
     else
       abort_text = total_syl > 17 ? 'too many' : 'too few'
       puts "Phrase has #{abort_text} syllables (#{total_syl})!"
     end
   end
-  timeout_length = generated_haiku ? 300 : 120
+  timeout_length = generated_haiku ? 3600 : 120
   tweet_timeout(timeout_length)
 end
 
@@ -144,7 +153,15 @@ def tweet_timeout(wait_time)
     sleep 1
   end
 
-  check_tweets(500)
+  begin
+    check_tweets(500)
+  rescue
+    exit
+  end
 end
 
-check_tweets(500)
+begin
+  check_tweets(500)
+rescue
+  exit
+end

@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'numbers_and_words'
 gem 'syllabize'
 gem 'mini_magick'
 gem 'twitter'
