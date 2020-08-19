@@ -13,10 +13,10 @@ def make_image(text, id)
 
   img.combine_options do |c|
     c.gravity 'Northeast'
-    c.draw "text 50,30 '#{text}'"
-    c.font './Mansalva-Regular.ttf'
     c.pointsize 82
     c.stroke '#000000'
+    c.draw "text 50,30 '#{text}'"
+    c.font './Mansalva-Regular.ttf'
     c.strokewidth 2
     c.fill('#cccccc')
   end
@@ -62,12 +62,15 @@ def check_tweets(tweets_num)
     # this removes @ and # entries
     # t_text.gsub!(/\B[@#]\S+\b/, '')
     t_text.gsub!(/#{URI::regexp}/, '')
-    next if File.exist?("img/#{tweet.id}.jpg")
+    if File.exist?("img/#{tweet.id}.jpg")
+      puts "File exists for #{tweet.id}. Skipping."
+      next
+    end
 
     total_syl = t_text.count_syllables
     if total_syl == 17
       puts "Tweet #{tweet.user.id} has exactly #{total_syl} syllables."
-      @words = escape_characters_in_string(t_text).split(' ')
+      @words = escape_characters_in_string(t_text).tr('#@$','').split(' ')
       lines = ['', '', '']
 
       # First line. 5 syllables.
