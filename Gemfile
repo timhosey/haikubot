@@ -1,3 +1,5 @@
 source 'https://rubygems.org'
+gem 'syllabize'
+gem 'rubygems'
 gem 'mini_magick'
 gem 'twitter'
