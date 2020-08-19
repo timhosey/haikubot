@@ -9,16 +9,83 @@ def escape_characters_in_string(string)
 end
 
 def make_image(text, id)
-  img = MiniMagick::Image.open('img/base.jpg')
+  # Picks a base image.
+  base_img_list = Dir['./img/base_*.jpg']
+  base_img = base_img_list.sample
+  base_img_number = File.basename(base_img, '.*' ).gsub('base_', '')
+
+  base_img_settings = {
+    '1': {
+      'gravity': 'Northeast',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '2': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '3': {
+      'gravity': 'South',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '4': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '5': {
+      'gravity': 'Southeast',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '6': {
+      'gravity': 'Center',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '7': {
+      'gravity': 'West',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '8': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '9': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '10': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '11': {
+      'gravity': 'East',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+    '12': {
+      'gravity': 'Center',
+      'pointsize': 82,
+      'fill': '#cccccc',
+    },
+  }
+  img = MiniMagick::Image.open(base_img)
 
   img.combine_options do |c|
-    c.gravity 'Northeast'
-    c.pointsize 82
+    c.gravity base_img_settings[base_img_number.to_s]['gravity']
+    c.pointsize base_img_settings[base_img_number.to_s]['pointsize']
     c.stroke '#000000'
     c.draw "text 50,30 '#{text}'"
     c.font './Mansalva-Regular.ttf'
     c.strokewidth 2
-    c.fill('#cccccc')
+    c.fill(base_img_settings[base_img_number.to_s]['fill'])
   end
 
   img.write("img/#{id}.jpg")
