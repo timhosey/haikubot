@@ -2,7 +2,8 @@ require 'syllabize'
 require 'rubygems'
 require 'mini_magick'
 require 'twitter'
-require "swearjar"
+require 'swearjar'
+require 'yaml'
 
 def escape_characters_in_string(string)
   pattern = /(\'|\"|\.|\*|\/|\-|\\)/
@@ -16,91 +17,18 @@ def make_image(text, id)
   base_img_number = File.basename(base_img, '.*' ).gsub('base_', '')
 
   # Changing settings based on image so they look nice.
-  base_img_settings = {
-    '1': {
-      'gravity': 'Northeast',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '2': {
-      'gravity': 'East',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '3': {
-      'gravity': 'South',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '4': {
-      'gravity': 'East',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '5': {
-      'gravity': 'Southeast',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '6': {
-      'gravity': 'Center',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '7': {
-      'gravity': 'West',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '8': {
-      'gravity': 'East',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '9': {
-      'gravity': 'East',
-      'pointsize': 82,
-      'fill': '#000000',
-      'stroke': '#cccccc',
-    },
-    '10': {
-      'gravity': 'East',
-      'pointsize': 82,
-      'fill': '#000000',
-      'stroke': '#cccccc',
-    },
-    '11': {
-      'gravity': 'North',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-    '12': {
-      'gravity': 'Center',
-      'pointsize': 82,
-      'fill': '#cccccc',
-      'stroke': '#000000',
-    },
-  }
+  base_img_settings = YAML.load(File.read('base_img_settings.yml'))
 
   img = MiniMagick::Image.open(base_img)
 
   img.combine_options do |c|
-    c.gravity base_img_settings[:"#{base_img_number}"][:gravity]
-    c.pointsize base_img_settings[:"#{base_img_number}"][:pointsize]
-    c.stroke '#000000'
+    c.gravity base_img_settings[:"#{base_img_number.to_s}"][:gravity]
+    c.pointsize base_img_settings[:"#{base_img_number.to_s}"][:pointsize]
+    c.stroke base_img_settings[:"#{base_img_number.to_s}"][:stroke]
     c.draw "text 50,30 '#{text}'"
     c.font './Mansalva-Regular.ttf'
     c.strokewidth 2
-    c.fill(base_img_settings[:"#{base_img_number}"][:fill])
+    c.fill(base_img_settings[:"#{base_img_number.to_s}"][:fill])
   end
 
   img.write("img/#{id}.jpg")
