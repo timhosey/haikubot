@@ -4,8 +4,6 @@ require 'mini_magick'
 require 'twitter'
 require "swearjar"
 
-@sj = Swearjar.default
-
 def escape_characters_in_string(string)
   pattern = /(\'|\"|\.|\*|\/|\-|\\)/
   string.gsub(pattern){|match|"\\"  + match} # <-- Trying to take the currently found match and add a \ before it I have no idea how to do that).
@@ -119,6 +117,8 @@ end
 def check_tweets(tweets_num)
   puts "Checking #{tweets_num} latest tweets..."
 
+  sj = Swearjar.default
+
   # Get keys and secrets from local file (not in repo anymore...)
   # In file ./creds add each on a newline matching below
   creds = File.readlines('./creds')
@@ -136,7 +136,10 @@ def check_tweets(tweets_num)
     
     # Skip if we generated a haiku this search.
     next if generated_haiku
-    next if @sj.scorecard(tweet.text)['discriminatory'] > 0
+
+    # Skip if it has discriminatory language.
+    scorecard = sj.scorecard(tweet.text)
+    next if (scorecard.key?('discriminatory') && scorecard['discriminatory'] > 0)
 
     @words = []
 
