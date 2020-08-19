@@ -1,2 +1,5 @@
 source 'https://rubygems.org'
-gem 'rmagick'
+gem 'syllabize'
+gem 'rubygems'
+gem 'mini_magick'
+gem 'twitter'

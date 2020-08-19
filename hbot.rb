@@ -46,11 +46,15 @@ end
 
 def check_tweets(tweets_num)
   puts "Checking #{tweets_num} latest tweets..."
+
+  # Get keys and secrets from local file (not in repo anymore...)
+  # In file ./creds add each on a newline matching below
+  creds = File.readlines('./creds')
   client = Twitter::REST::Client.new do |config|
-    config.consumer_key        = 'yRdSUEMRlQrbwQ9i37V8fT3K8'
-    config.consumer_secret     = 'bhh1T79obF1RQYHTuWhdUBW1sXqFEjIpffNxvM6FCawlTvaFkV'
-    config.access_token        = '2798026922-HLjTtuQoCEwsCsknhFijWKzw6ZckV2tjEjoxYpI'
-    config.access_token_secret = 'zxzTDj8od3SpOFXqt4dNo725u2H34OWjH7al5fSWoeHZl'
+    config.consumer_key        = creds[0]
+    config.consumer_secret     = creds[1]
+    config.access_token        = creds[2]
+    config.access_token_secret = creds[3]
   end
 
   client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
@@ -75,15 +79,15 @@ def check_tweets(tweets_num)
 
       # First line. 5 syllables.
       lines[0] = get_line(5)
-      next if !lines[0]
+      next unless lines[0]
 
       # Second line. 7 syllables.
       lines[1] = get_line(7)
-      next if !lines[1]
+      next unless lines[1]
 
       # Third line. 5 syllables.
       lines[2] = get_line(5)
-      next if !lines[2]
+      next if unless lines[2]
       puts "Generated Haiku from Tweet ##{tweet.id}!"
       puts lines
       make_image("#{lines[0]}\n#{lines[1]}\n#{lines[2]}\n- @#{t_name}", tweet.id)
