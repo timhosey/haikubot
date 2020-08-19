@@ -46,11 +46,15 @@ end
 
 def check_tweets(tweets_num)
   puts "Checking #{tweets_num} latest tweets..."
+
+  # Get keys and secrets from local file (not in repo anymore...)
+  # In file ./creds add each on a newline matching below
+  creds = File.readlines('./creds')
   client = Twitter::REST::Client.new do |config|
-    config.consumer_key        = 'yRdSUEMRlQrbwQ9i37V8fT3K8'
-    config.consumer_secret     = 'bhh1T79obF1RQYHTuWhdUBW1sXqFEjIpffNxvM6FCawlTvaFkV'
-    config.access_token        = '2798026922-HLjTtuQoCEwsCsknhFijWKzw6ZckV2tjEjoxYpI'
-    config.access_token_secret = 'zxzTDj8od3SpOFXqt4dNo725u2H34OWjH7al5fSWoeHZl'
+    config.consumer_key        = creds[0]
+    config.consumer_secret     = creds[1]
+    config.access_token        = creds[2]
+    config.access_token_secret = creds[3]
   end
 
   client.search('(#gaming OR #games OR #ghostoftsushima OR #ghostsoftsushima OR #videogames OR #fallguys) -rt', result_type: 'recent', lang: 'en').take(tweets_num).collect do |tweet|
