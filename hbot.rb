@@ -155,13 +155,15 @@ def tweet_timeout(wait_time)
 
   begin
     check_tweets(500)
-  rescue
+  rescue StandardError => e
+    abort "Error: #{e.message}"
     exit
   end
 end
 
 begin
   check_tweets(500)
-rescue
+rescue StandardError => e
+  abort "Error: #{e.message}"
   exit
 end
