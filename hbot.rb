@@ -26,6 +26,8 @@ def make_image(text, id)
   # Changing settings based on image so they look nice.
   base_img_settings = YAML.load(File.read('base_img_settings.yml'))
 
+  puts "Building image using #{base_img}."
+
   img = MiniMagick::Image.open(base_img)
 
   img.combine_options do |c|
@@ -39,6 +41,8 @@ def make_image(text, id)
   end
 
   img.write("#{@settings[:img_path]}/#{id}.jpg")
+  
+  puts 'Image written.'
 end
 
 def get_line(line_length)

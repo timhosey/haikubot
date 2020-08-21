@@ -21,7 +21,7 @@
   :fill: '#cccccc'
   :stroke: '#000000'
 :'5':
-  gravity': 'Southeast'
+  gravity: 'Southeast'
   :pointsize: 82
   :fill: '#cccccc'
   :stroke: '#000000'
