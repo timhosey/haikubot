@@ -16,7 +16,8 @@ pipeline {
         branch 'master'
       }
       steps {
-        if (fileExists 'Dockerfile') {
+        def exists = fileExists 'Dockerfile'
+        if (exists) {
           echo 'Dockerfile exists and we pushed to master.' 
         } else {
           abort 'Dockerfile is missing so we\'re killing the run.'
