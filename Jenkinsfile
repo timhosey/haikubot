@@ -1,8 +1,5 @@
 pipeline {
   agent { label 'ruby' }
-  environment{
-    DOCKERFILE = fileExists 'Dockerfile'
-  }
   stages {
     stage('Setup') {
       steps {
@@ -16,11 +13,14 @@ pipeline {
     }
     stage('Build Docker Dummy') {
       when {
-        expression { DOCKERFILE == 'true' }
         branch 'master'
       }
       steps {
-        echo 'Dockerfile exists and we pushed to master.' 
+        if (fileExists 'Dockerfile') {
+          echo 'Dockerfile exists and we pushed to master.' 
+        } else {
+          abort 'Dockerfile is missing so we\'re killing the run.'
+        }
       }
     }
   }
