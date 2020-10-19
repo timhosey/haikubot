@@ -4,6 +4,7 @@ pipeline {
     stage('Setup') {
       steps {
         sh label: 'Checking RuboCop Version', script: 'rubocop -v'
+        sh label: 'Checking Docker Version', script: 'docker -v'
       }
     }
     stage('RuboCop') {
@@ -17,7 +18,8 @@ pipeline {
         branch 'master'
       }
       steps {
-        echo 'Dockerfile exists and we pushed to master.' 
+        echo 'Dockerfile exists and we have pushed to master. Exporting image...' 
+        sh label: 'Build Dockerfile', script: 'docker build --output type=tar,dest=out.tar .'
       }
     }
   }
