@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Setup') {
       steps {
-        sh 'sudo gem install rubocop'
+        sh 'rubocop -v'
       }
     }
     stage('RuboCop') {
