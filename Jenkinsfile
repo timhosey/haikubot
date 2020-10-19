@@ -2,10 +2,14 @@ pipeline {
   agent { label 'ruby' }
   stages {
     stage('Setup') {
-      sh 'gem install rubocop'
+      steps {
+        sh 'gem install rubocop'
+      }
     }
     stage('RuboCop') {
-      sh 'rubocop'
+      steps {
+        sh 'rubocop'
+      }
     }
   }
 }
