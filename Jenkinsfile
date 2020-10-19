@@ -3,12 +3,12 @@ pipeline {
   stages {
     stage('Setup') {
       steps {
-        sh 'rubocop -v'
+        sh label: 'Checking RuboCop Version', script: 'rubocop -v'
       }
     }
     stage('RuboCop') {
       steps {
-        sh 'rubocop'
+        sh label: 'Running RuboCop', script: 'rubocop'
       }
     }
   }
