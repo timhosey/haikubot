@@ -13,7 +13,7 @@ pipeline {
     }
     stage('Build Docker Dummy') {
       when {
-        fileExists 'Dockerfile'
+        expression { fileExists 'Dockerfile' }
         branch 'master'
       }
       steps {
