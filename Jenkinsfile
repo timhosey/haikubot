@@ -13,15 +13,11 @@ pipeline {
     }
     stage('Build Docker Dummy') {
       when {
+        expression { fileExists('./Dockerfile') }
         branch 'master'
       }
       steps {
-        def exists = fileExists 'Dockerfile'
-        if (exists) {
-          echo 'Dockerfile exists and we pushed to master.' 
-        } else {
-          abort 'Dockerfile is missing so we\'re killing the run.'
-        }
+        echo 'Dockerfile exists and we pushed to master.' 
       }
     }
   }
