@@ -1,5 +1,8 @@
 pipeline {
   agent { label 'ruby' }
+  environment{
+    DOCKERFILE = fileExists 'Dockerfile'
+  }
   stages {
     stage('Setup') {
       steps {
@@ -13,7 +16,7 @@ pipeline {
     }
     stage('Build Docker Dummy') {
       when {
-        expression { fileExists 'Dockerfile' }
+        expression { DOCKERFILE == 'true' }
         branch 'master'
       }
       steps {
