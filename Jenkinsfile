@@ -11,5 +11,14 @@ pipeline {
         sh label: 'Running RuboCop', script: 'rubocop'
       }
     }
+    stage('Build Docker Dummy') {
+      when {
+        fileExists 'Dockerfile'
+        branch 'master'
+      }
+      steps {
+        echo 'Dockerfile exists and we pushed to master.' 
+      }
+    }
   }
 }
