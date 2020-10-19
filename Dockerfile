@@ -3,7 +3,7 @@ ENTRYPOINT ["ruby", "hbot.rb"]
 
 WORKDIR /app
 
-ADD Gemfile Gemfile.lock /app/
+ADD Gemfile /app/
 RUN apt install imagemagick
 RUN bundle install -j 8
 
