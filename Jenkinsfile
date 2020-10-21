@@ -39,6 +39,7 @@ pipeline {
       script {
         try {
           sh label: 'Delete Docker image', script: 'docker image rm haikubot'
+          sh label: 'Delete Ruby Docker image', script: 'docker image rm ruby'
         } catch(err) {
           echo "Docker image doesn't exist; let's continue."
         }
