@@ -12,7 +12,7 @@ pipeline {
         sh label: 'Running RuboCop', script: 'rubocop'
       }
     }
-    stage('Build Docker Dummy') {
+    stage('Build Docker Image') {
       when {
         expression { fileExists('./Dockerfile') }
         branch 'master'
@@ -20,8 +20,26 @@ pipeline {
       steps {
         echo 'Dockerfile exists and we have pushed to master. Exporting image...' 
         sh label: 'Build Dockerfile', script: 'docker build -t haikubot .'
+      }
+    }
+    stage('Archive Docker Image') {
+      when {
+        expression { fileExists('./Dockerfile') }
+        branch 'master'
+      }
+      steps {
         sh label: 'Pull Docker image into tar', script: 'docker image save -o ./haikubot.tar haikubot:latest'
         archiveArtifacts artifacts: 'haikubot.tar'
+      }
+    }
+  }
+  post {
+    always {
+      echo 'Cleaning up...'
+      try {
+        sh label: 'Delete Docker image', script: 'docker image rm haikubot'
+      } catch(err) {
+        echo "Caught: ${err}"
       }
     }
   }
