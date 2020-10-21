@@ -36,10 +36,12 @@ pipeline {
   post {
     always {
       echo 'Cleaning up...'
-      try {
-        sh label: 'Delete Docker image', script: 'docker image rm haikubot'
-      } catch(err) {
-        echo "Caught: ${err}"
+      script {
+        try {
+          sh label: 'Delete Docker image', script: 'docker image rm haikubot'
+        } catch(err) {
+          echo "Caught: ${err}"
+        }
       }
     }
   }
