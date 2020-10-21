@@ -40,7 +40,7 @@ pipeline {
         try {
           sh label: 'Delete Docker image', script: 'docker image rm haikubot'
         } catch(err) {
-          echo "Caught: ${err}"
+          echo "Docker image doesn't exist; let's continue."
         }
       }
     }
