@@ -43,6 +43,7 @@ pipeline {
         } catch(err) {
           echo "Docker image doesn't exist; let's continue."
         }
+      echo 'Complete.'
       }
     }
   }
