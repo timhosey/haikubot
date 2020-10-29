@@ -1,4 +1,4 @@
-FROM ruby:latest
+FROM ruby:alpine
 ENTRYPOINT ["ruby", "hbot.rb"]
 
 WORKDIR /app
